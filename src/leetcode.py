@@ -45,6 +45,7 @@ def find_smallest_positive(xs):
 
     return result
 
+
 def find_largest_negative(xs, lo=0, hi=None):
     '''
     Assume that xs is a list of numbers sorted from LOWEST to HIGHEST.

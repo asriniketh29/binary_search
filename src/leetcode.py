@@ -30,7 +30,20 @@ def find_smallest_positive(xs):
     >>> find_smallest_positive([-3, -2, -1]) is None
     True
     '''
+    left = 0
+    right = len(xs) - 1
+    result = None
 
+    while left <= right:
+        mid = (left + right) // 2
+
+        if xs[mid] > 0:
+            result = mid       # Found a positive number; record index and check left side for a smaller one
+            right = mid - 1
+        else:
+            left = mid + 1     # xs[mid] is <= 0; search in the right half
+
+    return result
 
 def find_largest_negative(xs, lo=0, hi=None):
     '''
@@ -50,6 +63,23 @@ def find_largest_negative(xs, lo=0, hi=None):
     >>> find_largest_negative([-3, -2, -1])
     2
     '''
+    if hi is None:
+        hi = len(xs) - 1
+
+    left = lo
+    right = hi
+    result = None
+
+    while left <= right:
+        mid = (left + right) // 2
+
+        if xs[mid] < 0:
+            result = mid       # Found a negative number; record index and check right side for a larger one
+            left = mid + 1
+        else:
+            right = mid - 1    # xs[mid] is >= 0; search in the left half
+
+    return result
 
 
 def find_smallest(xs, lo=0, hi=None):
@@ -73,6 +103,22 @@ def find_smallest(xs, lo=0, hi=None):
     >>> find_smallest([]) is None
     True
     '''
+    if not xs:
+        return None
+
+    left, right = 0, len(xs) - 1
+
+    while left < right:
+        mid = (left + right) // 2
+
+        # If the element at mid is strictly greater than the element to its right,
+        # the minimum must lie strictly to the right.
+        if xs[mid] > xs[mid + 1]:
+            left = mid + 1
+        else:
+            right = mid
+
+    return left
 
 
 def count_repeats(xs, x):
@@ -96,3 +142,31 @@ def count_repeats(xs, x):
     >>> count_repeats([3, 2, 1], 4)
     0
     '''
+    def lowest_index_gte(target):
+        # Lowest index where xs[i] <= target in descending order
+        left, right = 0, len(xs)
+        while left < right:
+            mid = (left + right) // 2
+            if xs[mid] <= target:
+                right = mid
+            else:
+                left = mid + 1
+        return left
+
+    def lowest_index_lt(target):
+        # Lowest index where xs[i] < target in descending order
+        left, right = 0, len(xs)
+        while left < right:
+            mid = (left + right) // 2
+            if xs[mid] < target:
+                right = mid
+            else:
+                left = mid + 1
+        return left
+
+    # Step 1 & Step 2:
+    start_index = lowest_index_gte(x)
+    end_index = lowest_index_lt(x)
+
+    # Step 3: Return the difference
+    return end_index - start_index
